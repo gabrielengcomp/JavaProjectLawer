@@ -17,6 +17,9 @@ public class MenuView extends JFrame {
 	private JButton btnPessoaFisica;
 	private JButton btnPessoaJuridica;
 	private JButton btnAdvogado;
+	private JButton btnProcesso;
+	private JButton btnDespesa;
+	private JButton btnAudiencia;
 
 	public MenuView() {
 		initialize();
@@ -37,32 +40,56 @@ public class MenuView extends JFrame {
 				actionTribunal();
 			}
 		});
-		
+
 		btnPessoaFisica = new JButton("Cadastrar PF");
 		btnPessoaFisica.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actionPessoaFisica();
 			}
 		});
-		
+
 		btnPessoaJuridica = new JButton("Cadastrar PJ");
 		btnPessoaJuridica.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actionPessoaJuridica();
 			}
 		});
-		
+
 		btnAdvogado = new JButton("Cadastrar Advogado");
 		btnAdvogado.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actionAdvogado();
 			}
 		});
-		
+
+		btnProcesso = new JButton("Cadastrar Processo");
+		btnProcesso.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionProcesso();
+			}
+		});
+
+		btnDespesa = new JButton("Gerenciar Despesas");
+		btnDespesa.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionDespesa();
+			}
+		});
+
+		btnAudiencia = new JButton("Gerenciar Audiencias");
+		btnAudiencia.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionAudiencia();
+			}
+		});
+
 		this.add(btnTribunal);
 		this.add(btnPessoaFisica);
 		this.add(btnPessoaJuridica);
 		this.add(btnAdvogado);
+		this.add(btnProcesso);
+		this.add(btnDespesa);
+		this.add(btnAudiencia);
 	}
 
 	private void actionTribunal() {
@@ -70,20 +97,35 @@ public class MenuView extends JFrame {
 		TribunalView tribunalView = new TribunalView(MainController.getTribunalController());
 		tribunalView.setVisible(true);
 	}
-	
+
 	private void actionPessoaFisica() {
 
 		PessoaFisicaView pessoaFisicaView = new PessoaFisicaView(MainController.getPessoaController());
 		pessoaFisicaView.setVisible(true);
 	}
-	
+
 	private void actionPessoaJuridica() {
 		PessoaJuridicaView pessoaJuridicaView = new PessoaJuridicaView(MainController.getPessoaController());
 		pessoaJuridicaView.setVisible(true);
 	}
-	
+
 	private void actionAdvogado() {
 		AdvogadoView advogadoView = new AdvogadoView(MainController.getPessoaController());
 		advogadoView.setVisible(true);
+	}
+
+	private void actionProcesso() {
+		ProcessoView processoView = new ProcessoView(MainController.getProcessoController());
+		processoView.setVisible(true);
+	}
+
+	private void actionDespesa() {
+		DespesaView despesaView = new DespesaView(MainController.getProcessoController());
+		despesaView.setVisible(true);
+	}
+	
+	private void actionAudiencia() {
+		AudienciaView audienciaView = new AudienciaView(MainController.getProcessoController());
+		audienciaView.setVisible(true);
 	}
 }

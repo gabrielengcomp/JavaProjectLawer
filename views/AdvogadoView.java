@@ -26,10 +26,17 @@ public class AdvogadoView extends JFrame {
 
 	private PessoaController pessoaController;
 
-	private JLabel lblCpf, lblRegistro;
-	private JTextField txtCpf, txtRegistro;
+	private JLabel lblCpf;
+	private JLabel lblRegistro;
+	private JTextField txtCpf;
+	private JTextField txtRegistro;
 
-	private JButton btnBuscar, btnIncluir, btnCancelar, btnListar;
+	private JButton btnBuscar;
+	private JButton btnIncluir;
+	private JButton btnCancelar;
+	private JButton btnListar;
+	private JButton btnRemover;
+	
 	private JTextArea txtLista;
 
 	public AdvogadoView(PessoaController pessoaController) {
@@ -43,7 +50,6 @@ public class AdvogadoView extends JFrame {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLayout(new FlowLayout(FlowLayout.LEFT));
 
-		// CPF
 		JPanel pnlCpf = new JPanel();
 		lblCpf = new JLabel("CPF");
 		txtCpf = new JTextField(15);
@@ -51,7 +57,6 @@ public class AdvogadoView extends JFrame {
 		pnlCpf.add(lblCpf);
 		pnlCpf.add(txtCpf);
 
-		// Registro
 		JPanel pnlRegistro = new JPanel();
 		lblRegistro = new JLabel("Registro");
 		txtRegistro = new JTextField(15);
@@ -59,14 +64,14 @@ public class AdvogadoView extends JFrame {
 		pnlRegistro.add(txtRegistro);
 		pnlRegistro.add(btnBuscar);
 
-		// Botões
 		JPanel pnlBotoes = new JPanel();
 		btnIncluir = new JButton("Incluir");
 		btnCancelar = new JButton("Cancelar");
+		btnRemover = new JButton("Remover");
 		pnlBotoes.add(btnIncluir);
 		pnlBotoes.add(btnCancelar);
+		pnlBotoes.add(btnRemover);
 
-		// Lista
 		JPanel pnlLista = new JPanel();
 		txtLista = new JTextArea(10, 60);
 		txtLista.setEnabled(false);
@@ -74,12 +79,12 @@ public class AdvogadoView extends JFrame {
 		pnlLista.add(new JScrollPane(txtLista));
 		pnlLista.add(btnListar);
 
-		// Eventos
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actionBuscar();
 			}
 		});
+
 		btnIncluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actionIncluir();
@@ -96,8 +101,13 @@ public class AdvogadoView extends JFrame {
 				actionListar();
 			}
 		});
-
-		// Adicionando ao frame
+		
+		btnRemover.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionRemover();
+			}
+		});
+		
 		add(pnlRegistro);
 		add(pnlCpf);
 		add(pnlBotoes);
@@ -107,7 +117,7 @@ public class AdvogadoView extends JFrame {
 	private void actionBuscar() {
 		String registro = txtRegistro.getText();
 		try {
-			AdvogadoDto dto = pessoaController.getAdvogado(registro);
+			AdvogadoDto dto = pessoaController.getAdvogadoDto(registro);
 			txtCpf.setText(dto.getCpf());
 		} catch (AdvogadoException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
@@ -126,11 +136,25 @@ public class AdvogadoView extends JFrame {
 		}
 		actionListar();
 	}
-
+	
+	private void actionRemover() {
+		String registro = txtRegistro.getText();
+		
+		try {
+			pessoaController.getAdvogado(registro);
+			pessoaController.removeAdvogado(registro);
+			JOptionPane.showMessageDialog(this, "Advogado removido com sucesso!");
+	        clear();
+	        actionListar();
+		} catch (AdvogadoException e) {
+			JOptionPane.showMessageDialog(this, "Erro ao remover Advogado: " + e.getMessage());
+		}
+	}
+	
 	private void actionListar() {
 		List<AdvogadoDto> lista = pessoaController.getAdvogados();
 		txtLista.setText("");
-		
+
 		for (AdvogadoDto dto : lista) {
 			txtLista.append(dto.getCpf() + "\t" + dto.getRegistro() + "\t" + dto.getNome() + "\t" + dto.getEmail()
 					+ "\t" + dto.getTelefone() + "\n");

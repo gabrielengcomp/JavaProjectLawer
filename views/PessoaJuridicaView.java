@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import controllers.PessoaController;
 import dtos.PessoaJuridicaDto;
 import exceptions.CnpjException;
+import exceptions.CpfException;
 import exceptions.EmailException;
 import exceptions.PessoaException;
 
@@ -26,10 +27,28 @@ public class PessoaJuridicaView extends JFrame {
 
 	private PessoaController pessoaController;
 
-	private JLabel lblNome, lblEmail, lblCnpj, lblTelefone;
-	private JTextField txtNome, txtEmail, txtCnpj, txtTelefone;
+	private JLabel lblNome;
+	private JTextField txtNome;
 
-	private JButton btnBuscar, btnIncluir, btnAlterar, btnCancelar, btnListar;
+	private JLabel lblEmail;
+	private JTextField txtEmail;
+
+	private JLabel lblCnpj;
+	private JTextField txtCnpj;
+
+	private JLabel lblTelefone;
+	private JTextField txtTelefone;
+
+	private JLabel lblCpfPreposto;
+	private JTextField txtCpfPreposto;
+
+	private JButton btnBuscar;
+	private JButton btnIncluir;
+	private JButton btnAlterar;
+	private JButton btnCancelar;
+	private JButton btnListar;
+	private JButton btnRemover;
+
 	private JTextArea txtLista;
 
 	public PessoaJuridicaView(PessoaController pessoaController) {
@@ -43,7 +62,6 @@ public class PessoaJuridicaView extends JFrame {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLayout(new FlowLayout(FlowLayout.CENTER));
 
-		// CPF
 		JPanel pnlCnpj = new JPanel();
 		lblCnpj = new JLabel("CNPJ");
 		txtCnpj = new JTextField(20);
@@ -52,37 +70,40 @@ public class PessoaJuridicaView extends JFrame {
 		pnlCnpj.add(txtCnpj);
 		pnlCnpj.add(btnBuscar);
 
-		// Nome
 		JPanel pnlNome = new JPanel();
 		lblNome = new JLabel("Nome");
 		txtNome = new JTextField(30);
 		pnlNome.add(lblNome);
 		pnlNome.add(txtNome);
 
-		// Email
 		JPanel pnlEmail = new JPanel();
 		lblEmail = new JLabel("Email");
 		txtEmail = new JTextField(25);
 		pnlEmail.add(lblEmail);
 		pnlEmail.add(txtEmail);
 
-		// Telefone
 		JPanel pnlTelefone = new JPanel();
 		lblTelefone = new JLabel("Telefone");
 		txtTelefone = new JTextField(15);
 		pnlTelefone.add(lblTelefone);
 		pnlTelefone.add(txtTelefone);
 
-		// Botões
+		JPanel pnlCpfPreposto = new JPanel();
+		lblCpfPreposto = new JLabel("Cpf Preposto");
+		txtCpfPreposto = new JTextField(20);
+		pnlCpfPreposto.add(lblCpfPreposto);
+		pnlCpfPreposto.add(txtCpfPreposto);
+
 		JPanel pnlBotoes = new JPanel();
 		btnIncluir = new JButton("Incluir");
 		btnAlterar = new JButton("Alterar");
 		btnCancelar = new JButton("Cancelar");
+		btnRemover = new JButton("Remover");
 		pnlBotoes.add(btnIncluir);
 		pnlBotoes.add(btnAlterar);
 		pnlBotoes.add(btnCancelar);
+		pnlBotoes.add(btnRemover);
 
-		// Lista
 		JPanel pnlLista = new JPanel();
 		txtLista = new JTextArea(10, 60);
 		txtLista.setEnabled(false);
@@ -90,7 +111,6 @@ public class PessoaJuridicaView extends JFrame {
 		pnlLista.add(new JScrollPane(txtLista));
 		pnlLista.add(btnListar);
 
-		// Eventos
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actionBuscar();
@@ -116,12 +136,17 @@ public class PessoaJuridicaView extends JFrame {
 				actionListar();
 			}
 		});
+		btnRemover.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionRemover();
+			}
+		});
 
-		// Adicionando ao frame
 		add(pnlCnpj);
 		add(pnlNome);
 		add(pnlEmail);
 		add(pnlTelefone);
+		add(pnlCpfPreposto);
 		add(pnlBotoes);
 		add(pnlLista);
 	}
@@ -132,7 +157,7 @@ public class PessoaJuridicaView extends JFrame {
 			pessoaController.createPessoaJuridica(dto);
 			JOptionPane.showMessageDialog(this, "Pessoa Juridica cadastrada com sucesso!");
 			clear();
-		} catch (PessoaException | CnpjException | EmailException e) {
+		} catch (PessoaException | CnpjException | EmailException | CpfException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
 		}
 		actionListar();
@@ -144,7 +169,7 @@ public class PessoaJuridicaView extends JFrame {
 			pessoaController.updatePessoaJuridica(dto);
 			JOptionPane.showMessageDialog(this, "Pessoa atualizada com sucesso!");
 			clear();
-		} catch (PessoaException | EmailException e) {
+		} catch (PessoaException | EmailException | CpfException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
 		}
 		actionListar();
@@ -163,6 +188,20 @@ public class PessoaJuridicaView extends JFrame {
 		}
 	}
 
+	private void actionRemover() {
+		String cnpj = txtCnpj.getText();
+
+		try {
+			pessoaController.getPessoaJuridica(cnpj);
+			pessoaController.removePessoaJuridica(cnpj);
+			JOptionPane.showMessageDialog(this, "Pessoa Juridica removida com sucesso!");
+			clear();
+			actionListar();
+		} catch (PessoaException e) {
+			JOptionPane.showMessageDialog(this, "Erro ao remover Pessoa Juridica: " + e.getMessage());
+		}
+	}
+
 	private void actionListar() {
 		List<PessoaJuridicaDto> lista = pessoaController.getPessoasJuridicas();
 		txtLista.setText("");
@@ -177,7 +216,8 @@ public class PessoaJuridicaView extends JFrame {
 		String email = txtEmail.getText();
 		String cnpj = txtCnpj.getText();
 		String telefone = txtTelefone.getText();
-		return new PessoaJuridicaDto(nome, email, cnpj, telefone, null);
+		String preposto = txtCpfPreposto.getText();
+		return new PessoaJuridicaDto(nome, email, cnpj, telefone, preposto);
 	}
 
 	private void clear() {
@@ -185,5 +225,6 @@ public class PessoaJuridicaView extends JFrame {
 		txtEmail.setText("");
 		txtCnpj.setText("");
 		txtTelefone.setText("");
+		txtCpfPreposto.setText("");
 	}
 }

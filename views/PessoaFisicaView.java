@@ -26,10 +26,25 @@ public class PessoaFisicaView extends JFrame {
 
 	private PessoaController pessoaController;
 
-	private JLabel lblNome, lblEmail, lblCpf, lblTelefone;
-	private JTextField txtNome, txtEmail, txtCpf, txtTelefone;
+	private JLabel lblNome;
+	private JTextField txtNome;
 
-	private JButton btnBuscar, btnIncluir, btnAlterar, btnCancelar, btnListar;
+	private JLabel lblEmail;
+	private JTextField txtEmail;
+
+	private JLabel lblCpf;
+	private JTextField txtCpf;
+
+	private JLabel lblTelefone;
+	private JTextField txtTelefone;
+
+	private JButton btnBuscar;
+	private JButton btnIncluir;
+	private JButton btnAlterar;
+	private JButton btnCancelar;
+	private JButton btnListar;
+	private JButton btnRemover;
+
 	private JTextArea txtLista;
 
 	public PessoaFisicaView(PessoaController pessoaController) {
@@ -43,7 +58,6 @@ public class PessoaFisicaView extends JFrame {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLayout(new FlowLayout(FlowLayout.LEFT));
 
-		// CPF
 		JPanel pnlCpf = new JPanel();
 		lblCpf = new JLabel("CPF");
 		txtCpf = new JTextField(15);
@@ -52,37 +66,34 @@ public class PessoaFisicaView extends JFrame {
 		pnlCpf.add(txtCpf);
 		pnlCpf.add(btnBuscar);
 
-		// Nome
 		JPanel pnlNome = new JPanel();
 		lblNome = new JLabel("Nome");
 		txtNome = new JTextField(30);
 		pnlNome.add(lblNome);
 		pnlNome.add(txtNome);
 
-		// Email
 		JPanel pnlEmail = new JPanel();
 		lblEmail = new JLabel("Email");
 		txtEmail = new JTextField(25);
 		pnlEmail.add(lblEmail);
 		pnlEmail.add(txtEmail);
 
-		// Telefone
 		JPanel pnlTelefone = new JPanel();
 		lblTelefone = new JLabel("Telefone");
 		txtTelefone = new JTextField(15);
 		pnlTelefone.add(lblTelefone);
 		pnlTelefone.add(txtTelefone);
 
-		// Botões
 		JPanel pnlBotoes = new JPanel();
 		btnIncluir = new JButton("Incluir");
 		btnAlterar = new JButton("Alterar");
 		btnCancelar = new JButton("Cancelar");
+		btnRemover = new JButton("Remover");
 		pnlBotoes.add(btnIncluir);
 		pnlBotoes.add(btnAlterar);
 		pnlBotoes.add(btnCancelar);
+		pnlBotoes.add(btnRemover);
 
-		// Lista
 		JPanel pnlLista = new JPanel();
 		txtLista = new JTextArea(10, 60);
 		txtLista.setEnabled(false);
@@ -90,7 +101,6 @@ public class PessoaFisicaView extends JFrame {
 		pnlLista.add(new JScrollPane(txtLista));
 		pnlLista.add(btnListar);
 
-		// Eventos
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actionBuscar();
@@ -116,8 +126,12 @@ public class PessoaFisicaView extends JFrame {
 				actionListar();
 			}
 		});
+		btnRemover.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionRemover();
+			}
+		});
 
-		// Adicionando ao frame
 		add(pnlCpf);
 		add(pnlNome);
 		add(pnlEmail);
@@ -160,6 +174,20 @@ public class PessoaFisicaView extends JFrame {
 		} catch (PessoaException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
 			clear();
+		}
+	}
+
+	private void actionRemover() {
+		String cpf = txtCpf.getText();
+
+		try {
+			pessoaController.getPessoaFisica(cpf);
+			pessoaController.removePessoaFisica(cpf);
+			JOptionPane.showMessageDialog(this, "Pessoa Fisica removida com sucesso!");
+			clear();
+			actionListar();
+		} catch (PessoaException e) {
+			JOptionPane.showMessageDialog(this, "Erro ao remover Pessoa Fisica: " + e.getMessage());
 		}
 	}
 

@@ -37,6 +37,7 @@ public class TribunalView extends JFrame {
 	private JButton btnAlterar;
 	private JButton btnCancelar;
 	private JButton btnListar;
+	private JButton btnRemover;
 
 	private JTextArea txtLista;
 
@@ -81,10 +82,12 @@ public class TribunalView extends JFrame {
 		btnIncluir = new JButton("Incluir");
 		btnAlterar = new JButton("Alterar");
 		btnCancelar = new JButton("Cancelar");
+		btnRemover = new JButton("Remover");
 
 		pnlBotoes.add(btnIncluir);
 		pnlBotoes.add(btnAlterar);
 		pnlBotoes.add(btnCancelar);
+		pnlBotoes.add(btnRemover);
 
 		JPanel pnlListar = new JPanel();
 		txtLista = new JTextArea(10, 40);
@@ -122,6 +125,12 @@ public class TribunalView extends JFrame {
 		btnListar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actionListar();
+			}
+		});
+
+		btnRemover.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionRemover();
 			}
 		});
 
@@ -186,7 +195,7 @@ public class TribunalView extends JFrame {
 		sigla = txtSigla.getText();
 
 		try {
-			dto = tribunalController.getTribunal(sigla);
+			dto = tribunalController.getTribunalDto(sigla);
 
 			txtSigla.setText(sigla);
 			txtNome.setText(dto.getNome());
@@ -197,13 +206,27 @@ public class TribunalView extends JFrame {
 			clear();
 		}
 	}
+	
+	private void actionRemover() {
+		String sigla = txtSigla.getText();
+		
+		try {
+			tribunalController.getTribunal(sigla);
+			tribunalController.removeTribunal(sigla);
+			JOptionPane.showMessageDialog(this, "Tribunal removido com sucesso!");
+	        clear();
+	        actionListar();
+		} catch (TribunalException e) {
+			JOptionPane.showMessageDialog(this, "Erro ao remover tribunal: " + e.getMessage());
+		}
+		
+	}
 
 	private void actionCancelar() {
 		clear();
 	}
 
 	private void actionListar() {
-
 		List<TribunalDto> lista = tribunalController.getTribunais();
 
 		txtLista.setText("");
